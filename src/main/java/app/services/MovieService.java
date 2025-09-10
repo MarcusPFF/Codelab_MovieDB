@@ -34,7 +34,6 @@ public class MovieService {
             if (response.statusCode() == 200) {
                 String json = response.body();
                 movieDTO = objectMapper.readValue(json, MovieDTO.class);
-                //System.out.println(response.body());
             } else {
                 System.out.println("GET request failed. Status code: " + response.statusCode());
             }
@@ -78,24 +77,19 @@ public class MovieService {
 
         try {
 
+            // Create an HttpClient instance
             HttpClient client = HttpClient.newHttpClient();
 
             for (int page = 1; page <= totalPages; page++) {
-                String url = "https://api.themoviedb.org/3/discover/movie"
-                        + "?api_key=" + API_KEY
-                        + "&sort_by=primary_release_date.asc"
-                        + "&page=" + page;
+                String url = "https://api.themoviedb.org/3/discover/movie" + "?api_key=" + API_KEY + "&sort_by=primary_release_date.asc" + "&page=" + page;
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(url))
-                        .GET()
-                        .build();
+                // Create a request
+                HttpRequest request = HttpRequest.newBuilder().uri(new URI(url)).GET().build();
 
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    MovieResponse searchResponse =
-                            objectMapper.readValue(response.body(), MovieResponse.class);
+                    MovieResponse searchResponse = objectMapper.readValue(response.body(), MovieResponse.class);
 
                     if (searchResponse.getResults() != null) {
                         allMovies.addAll(searchResponse.getResults());
